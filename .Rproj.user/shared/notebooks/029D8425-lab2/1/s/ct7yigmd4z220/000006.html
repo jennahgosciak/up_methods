@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<table class="table" style="">
+ <thead>
+  <tr>
+   <th style="text-align:left;font-weight: bold;"> Zoning Code </th>
+   <th style="text-align:left;font-weight: bold;"> Number of Lots </th>
+   <th style="text-align:left;font-weight: bold;"> Percentage of Total Number of Lots (%) </th>
+   <th style="text-align:left;font-weight: bold;"> Lot Area (sf) </th>
+   <th style="text-align:left;font-weight: bold;"> Percentage of Total Lot Area (sf) </th>
+   <th style="text-align:left;font-weight: bold;"> Building Floor Area (sf) </th>
+   <th style="text-align:left;font-weight: bold;"> Percentage of Total Building Floor Area (sf) </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R5 </td>
+   <td style="text-align:left;width: 7em; "> 1,520 </td>
+   <td style="text-align:left;width: 7em; "> 35% </td>
+   <td style="text-align:left;width: 7em; "> 4,924,420 </td>
+   <td style="text-align:left;width: 7em; "> 24% </td>
+   <td style="text-align:left;width: 7em; "> 6,121,190 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 26% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R6 </td>
+   <td style="text-align:left;width: 7em; "> 1,060 </td>
+   <td style="text-align:left;width: 7em; "> 24% </td>
+   <td style="text-align:left;width: 7em; "> 2,948,010 </td>
+   <td style="text-align:left;width: 7em; "> 15% </td>
+   <td style="text-align:left;width: 7em; "> 5,613,870 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 23% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R1-2 </td>
+   <td style="text-align:left;width: 7em; "> 900 </td>
+   <td style="text-align:left;width: 7em; "> 21% </td>
+   <td style="text-align:left;width: 7em; "> 6,644,680 </td>
+   <td style="text-align:left;width: 7em; "> 33% </td>
+   <td style="text-align:left;width: 7em; "> 2,126,620 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 9% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R3X </td>
+   <td style="text-align:left;width: 7em; "> 290 </td>
+   <td style="text-align:left;width: 7em; "> 7% </td>
+   <td style="text-align:left;width: 7em; "> 1,219,750 </td>
+   <td style="text-align:left;width: 7em; "> 6% </td>
+   <td style="text-align:left;width: 7em; "> 604,370 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 3% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R7-2 </td>
+   <td style="text-align:left;width: 7em; "> 220 </td>
+   <td style="text-align:left;width: 7em; "> 5% </td>
+   <td style="text-align:left;width: 7em; "> 1,607,610 </td>
+   <td style="text-align:left;width: 7em; "> 8% </td>
+   <td style="text-align:left;width: 7em; "> 5,602,270 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 23% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R4-1 </td>
+   <td style="text-align:left;width: 7em; "> 120 </td>
+   <td style="text-align:left;width: 7em; "> 3% </td>
+   <td style="text-align:left;width: 7em; "> 1,047,940 </td>
+   <td style="text-align:left;width: 7em; "> 5% </td>
+   <td style="text-align:left;width: 7em; "> 759,720 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 3% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C4-3 </td>
+   <td style="text-align:left;width: 7em; "> 70 </td>
+   <td style="text-align:left;width: 7em; "> 2% </td>
+   <td style="text-align:left;width: 7em; "> 196,490 </td>
+   <td style="text-align:left;width: 7em; "> 1% </td>
+   <td style="text-align:left;width: 7em; "> 482,620 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 2% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R3A </td>
+   <td style="text-align:left;width: 7em; "> 70 </td>
+   <td style="text-align:left;width: 7em; "> 2% </td>
+   <td style="text-align:left;width: 7em; "> 317,010 </td>
+   <td style="text-align:left;width: 7em; "> 2% </td>
+   <td style="text-align:left;width: 7em; "> 184,010 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 1% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R6A </td>
+   <td style="text-align:left;width: 7em; "> 60 </td>
+   <td style="text-align:left;width: 7em; "> 1% </td>
+   <td style="text-align:left;width: 7em; "> 756,820 </td>
+   <td style="text-align:left;width: 7em; "> 4% </td>
+   <td style="text-align:left;width: 7em; "> 1,386,180 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 6% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R4A </td>
+   <td style="text-align:left;width: 7em; "> 20 </td>
+   <td style="text-align:left;width: 7em; "> 1% </td>
+   <td style="text-align:left;width: 7em; "> 96,800 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 67,460 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C8-3 </td>
+   <td style="text-align:left;width: 7em; "> 20 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 313,330 </td>
+   <td style="text-align:left;width: 7em; "> 2% </td>
+   <td style="text-align:left;width: 7em; "> 843,520 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 4% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> M1-1 </td>
+   <td style="text-align:left;width: 7em; "> 20 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 69,430 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 42,240 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C8-2 </td>
+   <td style="text-align:left;width: 7em; "> 10 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 57,520 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 46,200 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C4-4D </td>
+   <td style="text-align:left;width: 7em; "> 0 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 23,620 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 32,630 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> PARK </td>
+   <td style="text-align:left;width: 7em; "> 0 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 64,660 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 400 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R3-2 </td>
+   <td style="text-align:left;width: 7em; "> 0 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 1,850 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 1,150 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> Total </td>
+   <td style="text-align:left;width: 7em; "> 4,390 </td>
+   <td style="text-align:left;width: 7em; "> 100% </td>
+   <td style="text-align:left;width: 7em; "> 20,289,940 </td>
+   <td style="text-align:left;width: 7em; "> 100% </td>
+   <td style="text-align:left;width: 7em; "> 23,914,440 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 100% </td>
+  </tr>
+</tbody>
+</table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

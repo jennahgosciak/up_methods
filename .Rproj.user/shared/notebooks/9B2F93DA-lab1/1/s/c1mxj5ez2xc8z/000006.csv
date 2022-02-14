@@ -1,0 +1,2 @@
+"0","rel_vars <- readxl::read_excel(path(""01_input"", ""rel_file_vars.xlsx""))"
+"0","rel_vars"

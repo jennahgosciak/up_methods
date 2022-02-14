@@ -1,0 +1,71 @@
+"0","# Important link: http://maps.nyc.gov/doitt/nycitymap/"
+"0","sel_tracts <- c(""232"", ""234"","
+"0","                       ""472"","
+"0","                       ""474"","
+"0","                       ""476"")"
+"0",""
+"0","df <- tbl(con, ""mappluto_21v3"") %>% "
+"0","  filter(ct2010 %in% sel_tracts) %>% "
+"0","  as.data.frame() "
+"0",""
+"0","df_sub <- df %>% "
+"0","  mutate(zonedist = str_sub(zonedist1, 1, 1),"
+"0","         commarea = rowSums(select(., c(""officearea"", ""retailarea"", ""garagearea"", ""strgearea"", ""otherarea"")))) %>% "
+"0","  rowwise() %>% "
+"0","  mutate(area_allowed = if_else(zonedist == ""R"","
+"0","                                residfar * lotarea,"
+"0","                                commfar * lotarea),"
+"0","         area_allowed_sp = if_else(is.na(spdist1), 0, max(residfar, commfar, na.rm = T) * lotarea),"
+"0","         max_area_allow = if_else(is.na(spdist1), area_allowed, area_allowed_sp),"
+"0","         unutilized_res = if_else(is.na(spdist1), max(area_allowed - resarea, 0), 0),"
+"0","         unutilized_comm_man = if_else(is.na(spdist1), max(area_allowed - commarea - factryarea, 0), 0),"
+"0","         unutilized_sp = if_else(is.na(spdist1), 0, max(area_allowed_sp - resarea - commarea - factryarea, 0), 0),"
+"0","         total_unutilized = if_else(is.na(spdist1), if_else(zonedist == ""R"", unutilized_res, unutilized_comm_man), unutilized_sp),"
+"0","         utilized = bldgarea,"
+"0","         lotunutilized = if_else(total_unutilized > 0 & !is.na(total_unutilized), ""Yes"", ""No"")) %>% "
+"0","  ungroup()"
+"0",""
+"0","df_sub %>% "
+"0","  tablist_qc(zonedist, zonedist1)"
+"1","`summarise()` has grouped output by 'zonedist'. You can override using the `.groups` argument.
+"
+"1","
+--------------------------------------
+ zonedist   zonedist1   _freq   _perc 
+---------- ----------- ------- -------
+    C         C4-3       72      1.6  
+
+    C         C4-4D       3      0.1  
+
+    C         C8-2        7      0.2  
+
+    C         C8-3       20      0.5  
+
+    M         M1-1       16      0.4  
+
+    P         PARK        2       0   
+
+    R         R1-2       902    20.5  
+
+    R         R3-2        1       0   
+
+    R          R3A       72      1.6  
+
+    R          R3X       287     6.5  
+
+    R         R4-1       122     2.8  
+
+    R          R4A       25      0.6  
+
+    R          R5       1524    34.7  
+
+    R          R6       1060    24.1  
+
+    R          R6A       62      1.4  
+
+    R         R7-2       215     4.9  
+--------------------------------------
+
+"
+"0","df_sub %>% "
+"0","  select(c(total_unutilized, utilized, max_area_allow))"

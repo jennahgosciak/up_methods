@@ -1,0 +1,6 @@
+"0","nta %>% "
+"0","  st_transform(2263) %>% "
+"0","  ggplot() +"
+"0","  geom_sf(fill = NA, color = ""black"") +"
+"0","  geom_sf(data = tracts, fill = colors[2], color = ""gray"", size = 1) +"
+"0","  theme_void()"

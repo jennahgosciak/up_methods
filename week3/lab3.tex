@@ -1,0 +1,194 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  landscape]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Lab 3: Zoning Analysis},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace} \usepackage{titling} \setlength{\droptitle}{-10ex} \pretitle{\begin{flushleft}\Large\bfseries} \posttitle{\par\end{flushleft}} \preauthor{\begin{flushleft}\Large} \postauthor{\end{flushleft}} \predate{\begin{flushleft}} \postdate{\end{flushleft}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Lab 3: Zoning Analysis}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\vspace{-2.2cm}
+\raggedright
+
+Jennah Gosciak \newline February 14th, 2022 \newline Census Tracts
+Representing Borough Park: 232, 234, 472, 474, and 476 \vspace{0.5cm}
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+\textbf{Zoning Inventory Analysis for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+
+\begin{tabular}[t]{|>{\raggedright\arraybackslash}p{15em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|}
+\hline
+\textbf{Zoning Code} & \textbf{Number of Lots} & \textbf{Percentage of Total Number of Lots (\%)} & \textbf{Lot Area (sf)} & \textbf{Percentage of Total Lot Area (sf)} & \textbf{Building Floor Area (sf)} & \textbf{Percentage of Total Building Floor Area (sf)}\\
+\hline
+\textbf{R5} & 1,152 & 50\% & 3,734,330 & 53\% & 4,780,671 & 44\%\\
+\hline
+\textbf{R6} & 1,060 & 46\% & 2,948,009 & 42\% & 5,613,870 & 51\%\\
+\hline
+\textbf{C4-3} & 72 & 3\% & 196,487 & 3\% & 482,617 & 4\%\\
+\hline
+\textbf{M1-1} & 16 & 1\% & 69,434 & 1\% & 42,244 & 0\%\\
+\hline
+\textbf{C8-2} & 7 & 0\% & 57,517 & 1\% & 46,200 & 0\%\\
+\hline
+\textbf{R3-2} & 1 & 0\% & 1,850 & 0\% & 1,152 & 0\%\\
+\hline
+\textbf{Total} & 2,308 & 100\% & 7,007,627 & 100\% & 10,966,754 & 100\%\\
+\hline
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) \newline \newline
+The majority of lots in Borough Park are zoned residential, particularly
+R5 and R6 zoning. R5 zoning produces lower density three- and
+four-family homes; R6 can produce multi-family buildings on smaller lots
+and denser, ``tower in the park'' developments on larger ones. The trend
+is similar for lot area and building area; 95\% of the building area,
+for example, is R5 and R6 zoning. A small percentage of lots is C4-3
+zoning, which allows for commercial and residential uses. The C4-3 lots
+reflect the presence of mixed use buildings with ground-floor
+storefronts in the neighborhood. There are no special districts in
+Borough Park. In general, the zoning inventory analysis aligns with my
+perception of the neighborhood as primarily low- and medium-density,
+with some mixed-use buildings on avenues and designated commercial
+areas.
+
+\newpage
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+\textbf{FAR Utilization Analysis for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+
+\begin{tabular}[t]{|>{\raggedright\arraybackslash}p{15em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|}
+\hline
+\textbf{Zoning Code} & \textbf{Total Unutilized FAR (sqft)} & \textbf{Share of Total Unutilized FAR} & \textbf{Total Utilized FAR (sqft)} & \textbf{Share of Total Utilized FAR (sqft)} & \textbf{Total Max Floor Area Allowed (sqft)} & \textbf{Share of Total Max Floor Area Allowed}\\
+\hline
+\textbf{R6} & 3,492,044 & 63\% & 5,613,870 & 51\% & 7,163,662 & 56\%\\
+\hline
+\textbf{R5} & 1,465,670 & 26\% & 4,780,671 & 44\% & 4,667,912 & 37\%\\
+\hline
+\textbf{C4-3} & 458,994 & 8\% & 482,617 & 4\% & 668,056 & 5\%\\
+\hline
+\textbf{C8-2} & 96,154 & 2\% & 46,200 & 0\% & 115,034 & 1\%\\
+\hline
+\textbf{M1-1} & 46,363 & 1\% & 42,244 & 0\% & 69,434 & 1\%\\
+\hline
+\textbf{R3-2} & 0 & 0\% & 1,152 & 0\% & 925 & 0\%\\
+\hline
+\textbf{Total} & 5,559,224 & 100\% & 10,966,754 & 100\% & 12,685,023 & 100\%\\
+\hline
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) \newline \newline
+Overall, the primary use in Borough Park is residential followed by
+mixed use (commercial and residential). There's around 5 million square
+feet of unutilized FAR, primarily among medium density residential lots
+and mixed use lots. There are a few lots (16) that are also zoned for
+manufacturing. The most unutilized FAR involves lots with R6 zoning.
+These lots could increase in density by more than 50\%. Similar to the
+general patterns of land use in the neighborhood, R5 and C4-3 lots also
+have significant unutilized FAR. However, total utilized area exceeds
+the maximum allowable floor area for R5 lots. There are 571 lots overall
+where the utilized area exceeds the maximum allowable area either
+because the total building area is larger than the
+\texttt{FAR*lot\ area} or because the residential area is only a subset
+of the total building area. Many of these are lots with R5 or R6 zoning.
+\newline \newline In absolute terms, R5 lots have a higher amount of
+unutilized FAR, but C4-3 lots could increase their total utilized area
+by almost 100\% if they were using the full FAR (i.e., the total
+unutilized area is almost equal to the total utilized area). The same
+zoning categories that have high amounts of unutilized FAR (R6, R5, and
+C4-3) also have high amounts of total utilized FAR. Since R6, R5, and
+C4-3 zoning types are the primary zoning types for the whole
+neighborhood, any changes to the R6, R5, and C4-3 requirements would
+have significant consequences. Efforts to modify the less dense R3-2
+zoning requirements, which allow for one- and two-family homes, might be
+ineffective in a neighborhood like Borough Park. Most of the buildings
+are three-family homes or larger and already have unutilized FAR.
+\newline \newline This table demonstrates that, purely based on zoning,
+there is potential to increase density in Borough Park. However,
+increasing density would require modifying or knocking down existing
+structures, which is likely not desirable nor feasible. At the moment,
+there does not seem to be a strong reason to modify the zoning in the
+neighborhood; any new developments that make full use of the existing
+FAR restrictions would increase density.
+
+\end{document}

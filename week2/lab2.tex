@@ -1,0 +1,158 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  landscape]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Lab 2: Land Use Inventory Table},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace} \usepackage{titling} \setlength{\droptitle}{-10ex} \pretitle{\begin{flushleft}\Large\bfseries} \posttitle{\par\end{flushleft}} \preauthor{\begin{flushleft}\Large} \postauthor{\end{flushleft}} \predate{\begin{flushleft}} \postdate{\end{flushleft}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Lab 2: Land Use Inventory Table}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\vspace{-2.2cm}
+\raggedright
+
+Jennah Gosciak \newline February 7th, 2022 \newline Census Tracts
+Representing Borough Park: 232, 234, 472, 474, and 476 \vspace{0.5cm}
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{tabular}[t]{|>{\raggedright\arraybackslash}p{15em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|}
+\hline
+\textbf{Land Use} & \textbf{Number of Lots} & \textbf{Percentage of Total Number of Lots (\%)} & \textbf{Lot Area (sf)} & \textbf{Percentage of Total Lot Area (sf)} & \textbf{Building Floor Area (sf)} & \textbf{Percentage of Total Building Floor Area (sf)}\\
+\hline
+\textbf{Residential (One- \& Two-Family Buildings, Multifamily Walk-up Buildings, \& Multifamily Elevator Buildings)} & 3,560 & 81\% & 15,448,980 & 76\% & 15,568,520 & 65\%\\
+\hline
+\textbf{Mixed Residential \& Commerical Buildings} & 440 & 10\% & 1,616,360 & 8\% & 4,640,780 & 19\%\\
+\hline
+\textbf{Commercial \& Office Buildings} & 60 & 1\% & 447,160 & 2\% & 826,490 & 3\%\\
+\hline
+\textbf{Industrial \& Manufacturing Buildings} & 10 & 0\% & 82,270 & 0\% & 250,920 & 1\%\\
+\hline
+\textbf{Transportation \& Utility} & 20 & 0\% & 225,830 & 1\% & 25,600 & 0\%\\
+\hline
+\textbf{Public Facilities \& Institutions} & 160 & 4\% & 1,952,600 & 10\% & 2,600,510 & 11\%\\
+\hline
+\textbf{Open Space} & 10 & 0\% & 92,790 & 0\% & 400 & 0\%\\
+\hline
+\textbf{Parking Facilities} & 20 & 0\% & 77,150 & 0\% & 1,220 & 0\%\\
+\hline
+\textbf{Vacant Land} & 110 & 2\% & 344,810 & 2\% & 0 & 0\%\\
+\hline
+\textbf{Total} & 4,390 & 100\% & 20,287,940 & 100\% & 23,914,440 & 100\%\\
+\hline
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) \newpage
+\onehalfspacing The land use inventory table for Borough Park
+(represented by five selected census tracts) shows that the majority of
+all lots (81\%) are residential. The most common land use categories by
+the number of lots are residential, mixed use, and public facilities and
+institutions. This is accurate to my perception of the neighborhood.
+Many buildings are either fully residential or have storefronts on the
+ground floor with residential apartments above. There are few buildings
+that are entirely commercial. Borough Park also has more than 300
+religious institutions, one reason that there are so many lots under the
+category of public facilities and institutions (Beyer, 2010). The land
+use inventory table also shows a significant amount of vacant land (110
+lots), which indicates areas that are either in the process of being
+redeveloped or areas that may be underutilized. Given the need for
+affordable housing, the Department of City Planning should evaluate
+whether these areas can be sources of new housing (Beyer, 2010).
+\newline \newline The land use inventory table suggests that most
+buildings in Borough Park are low density. The ratio of total building
+floor area to lot area is 1.18 (almost 1), which suggests that for a
+number of buildings the lot area aligns with the building floor area.
+This is especially true for residential buildings since the ratio of
+building floor area to lot area is 1. For mixed use (residential and
+commercial), the ratio is 2.87, which indicates that mixed use buildings
+are higher density. Since vacant lots have a building floor area of 0,
+it may be slightly misleading to compare the total building floor area
+to the total lot area. For both lot area and building floor area,
+residential buildings comprise a smaller share than they did when
+analyzing land use by the number of lots. In contrast, public facilities
+and institutions comprise a larger share. This finding suggests that
+public facilities and institutions are likely larger building structures
+compared to residential buildings. \newline \singlespacing Works Cited
+\newline Beyer, G. (2010, Oct.~8). Borough Park, Brooklyn.
+\textit{The New York Times.}
+\url{https://www.nytimes.com/2010/10/10/realestate/10living.html}.
+
+\end{document}

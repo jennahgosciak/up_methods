@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<table class="table" style="">
+ <thead>
+  <tr>
+   <th style="text-align:left;font-weight: bold;"> Zoning Code </th>
+   <th style="text-align:left;font-weight: bold;"> Total Unutilized FAR (sqft) </th>
+   <th style="text-align:left;font-weight: bold;"> Share of Total Unutilized FAR </th>
+   <th style="text-align:left;font-weight: bold;"> Total Utilized FAR (sqft) </th>
+   <th style="text-align:left;font-weight: bold;"> Share of Total Utilized FAR (sqft) </th>
+   <th style="text-align:left;font-weight: bold;"> Total Max Floor Area Allowed (sqft) </th>
+   <th style="text-align:left;font-weight: bold;"> Share of Total Max Floor Area Allowed </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R6 </td>
+   <td style="text-align:left;width: 7em; "> 3,492,044 </td>
+   <td style="text-align:left;width: 7em; "> 63% </td>
+   <td style="text-align:left;width: 7em; "> 5,613,870 </td>
+   <td style="text-align:left;width: 7em; "> 51% </td>
+   <td style="text-align:left;width: 7em; "> 7,163,662 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 56% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R5 </td>
+   <td style="text-align:left;width: 7em; "> 1,465,670 </td>
+   <td style="text-align:left;width: 7em; "> 26% </td>
+   <td style="text-align:left;width: 7em; "> 4,780,671 </td>
+   <td style="text-align:left;width: 7em; "> 44% </td>
+   <td style="text-align:left;width: 7em; "> 4,667,912 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 37% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C4-3 </td>
+   <td style="text-align:left;width: 7em; "> 458,994 </td>
+   <td style="text-align:left;width: 7em; "> 8% </td>
+   <td style="text-align:left;width: 7em; "> 482,617 </td>
+   <td style="text-align:left;width: 7em; "> 4% </td>
+   <td style="text-align:left;width: 7em; "> 668,056 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 5% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> C8-2 </td>
+   <td style="text-align:left;width: 7em; "> 96,154 </td>
+   <td style="text-align:left;width: 7em; "> 2% </td>
+   <td style="text-align:left;width: 7em; "> 46,200 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 115,034 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 1% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> M1-1 </td>
+   <td style="text-align:left;width: 7em; "> 46,363 </td>
+   <td style="text-align:left;width: 7em; "> 1% </td>
+   <td style="text-align:left;width: 7em; "> 42,244 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 69,434 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 1% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> R3-2 </td>
+   <td style="text-align:left;width: 7em; "> 0 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 1,152 </td>
+   <td style="text-align:left;width: 7em; "> 0% </td>
+   <td style="text-align:left;width: 7em; "> 925 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 0% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 15em; font-weight: bold;border-left:1px solid;"> Total </td>
+   <td style="text-align:left;width: 7em; "> 5,559,224 </td>
+   <td style="text-align:left;width: 7em; "> 100% </td>
+   <td style="text-align:left;width: 7em; "> 10,966,754 </td>
+   <td style="text-align:left;width: 7em; "> 100% </td>
+   <td style="text-align:left;width: 7em; "> 12,685,023 </td>
+   <td style="text-align:left;width: 7em; border-right:1px solid;"> 100% </td>
+  </tr>
+</tbody>
+</table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+---
+title: "Lab 3: Zoning Analysis"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: TRUE
+fancy: true
+geometry: margin=0.5in
+documentclass: article
+fontsize: 11pt
+classoption: landscape
+header-includes:
+  \usepackage{setspace}
+  \usepackage{titling}
+  \setlength{\droptitle}{-10ex}
+  \pretitle{\begin{flushleft}\Large\bfseries}
+  \posttitle{\par\end{flushleft}}
+  \preauthor{\begin{flushleft}\Large}
+  \postauthor{\end{flushleft}}
+  \predate{\begin{flushleft}}
+  \postdate{\end{flushleft}}
+---
+
+\vspace{-2.2cm}
+\raggedright
+Jennah Gosciak
+\newline
+February 14th, 2022 \newline
+Census Tracts Representing Borough Park: 232, 234, 472, 474, and 476
+\vspace{0.5cm}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(tidycensus)
+library(fs)
+library(DBI)
+library(dbplyr)
+library(RPostgres)
+library(knitr)
+library(kableExtra)
+
+con <- dbConnect(Postgres(),
+  user = "furmandata",
+  password = rstudioapi::askForPassword(),
+  host = "fcdata.c7h93yqbqnvu.us-east-1.rds.amazonaws.com",
+  port = 5432,
+  dbname = "fcdata",
+  bigint = "integer"
+)
+
+source("../99_common.R")
+```
+```{r, include = FALSE}
+# Important link: http://maps.nyc.gov/doitt/nycitymap/
+sel_tracts <- c("232", "234",
+                       "472",
+                       "474",
+                       "476")
+
+df <- tbl(con, "mappluto_21v3") %>% 
+  filter((ct2010 %in% sel_tracts) & borough == "BK") %>% 
+  as.data.frame() 
+
+df_sub <- df %>% 
+  mutate(zonedist = str_sub(zonedist1, 1, 1),
+         commarea = rowSums(select(., c("officearea", "retailarea", 
+                                        "garagearea", "strgearea", 
+                                        "otherarea")), na.rm = T)) %>% 
+  rowwise() %>% 
+  mutate(area_allowed = if_else(zonedist == "R",
+                                residfar * lotarea,
+                                commfar * lotarea),
+         area_allowed_sp = if_else(is.na(spdist1), 0, 
+                                   max(residfar, commfar, na.rm = T) * lotarea),
+         max_area_allow = if_else(is.na(spdist1), area_allowed, area_allowed_sp),
+         unutilized_res = if_else(is.na(spdist1), max(area_allowed - resarea, 
+                                                      0, na.rm = T), 0),
+         unutilized_comm_man = if_else(is.na(spdist1), 
+                                       max(area_allowed - commarea - factryarea, 
+                                           0, na.rm = T), 0),
+         unutilized_sp = if_else(is.na(spdist1), 0, 
+                                 max(area_allowed_sp - resarea - commarea - factryarea, 
+                                     0, na.rm = T)),
+         total_unutilized = case_when(!is.na(spdist1) ~ unutilized_sp,
+                                      zonedist == "R" ~ unutilized_res,
+                                      TRUE ~ unutilized_comm_man),
+         utilized = bldgarea,
+         lotunutilized = if_else(total_unutilized > 0 & !is.na(total_unutilized), "Yes", "No")) %>% 
+  ungroup()
+
+df_sub %>% 
+  tablist_qc(zonedist, zonedist1)
+
+df_sub %>% 
+  select(c(zonedist, total_unutilized, utilized, max_area_allow))
+
+df_sub %>% 
+  select(c(unutilized_res, area_allowed, resarea)) %>% 
+  mutate(check = area_allowed - resarea)
+
+df_sub %>% 
+  select(c(unutilized_comm_man, area_allowed, commarea, factryarea)) %>% 
+  filter(commarea > 0)
+
+df_sub %>% 
+  select(c(area_allowed, residfar, lotarea, zonedist)) %>% 
+  rowwise() %>% 
+  mutate(check = residfar * lotarea)
+
+df_sub %>% 
+  assertr::verify(area_allowed_sp == 0)
+
+stopifnot(length(unique(df$ct2010)) == 5)
+
+df_sub %>% 
+  filter(max_area_allow < utilized) %>% 
+  mutate(check = residfar * lotarea) %>% 
+  select("zonedist1", "bldgarea", "residfar", "lotarea", "max_area_allow", "unutilized_res",  "resarea", check, "yearbuilt", matches("area"))
+```
+```{r, include = FALSE}
+create_lutable <- function(df) {
+  df %>% 
+    group_by(zonedist1) %>%
+    summarize(numlots = n(),
+              lotarea = sum(lotarea, na.rm = T),
+              bldgarea = sum(bldgarea, na.rm = T)) %>% 
+    ungroup() %>% 
+    mutate(per_numlots = round(numlots * 100 / sum(numlots, na.rm = T)),
+           per_lotarea = round(lotarea * 100 / sum(lotarea, na.rm = T)),
+           per_bldgarea = round(bldgarea * 100 / sum(bldgarea, na.rm = T))) %>% 
+    mutate(across(starts_with("per_"), ~str_c(., "%"))) %>% 
+    select(zonedist1,
+           numlots, per_numlots,
+           lotarea, per_lotarea,
+           bldgarea, per_bldgarea)
+}
+```
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+\textbf{Zoning Inventory Analysis for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+```{r, echo = FALSE, messages = FALSE, warning = FALSE}
+df_sub %>% 
+  create_lutable() %>% 
+  bind_rows(df %>%
+              mutate(zonedist1 = "Total") %>% 
+              create_lutable()) %>%
+  mutate(order = if_else(zonedist1 == "Total", 1, 0)) %>% 
+  arrange(order, -numlots) %>% 
+  select(-"order") %>% 
+  rename_all(~c("Zoning Code", "Number of Lots", "Percentage of Total Number of Lots (%)",
+               "Lot Area (sf)", "Percentage of Total Lot Area (sf)",
+               "Building Floor Area (sf)", "Percentage of Total Building Floor Area (sf)")) %>%
+  mutate(across(c("Number of Lots", "Lot Area (sf)",
+                  "Building Floor Area (sf)"), ~scales::comma(.,
+                                                              accuracy= 1))) %>% 
+  kbl(align=c(rep('l',times=7))) %>% 
+  kable_styling(position = "left",
+                latex_options = c("hold_position")) %>%
+  column_spec(1, width = "15em", bold = TRUE, border_left = TRUE) %>% 
+  column_spec(2:6, width = "7em") %>% 
+  column_spec(7, width = "7em", border_right = TRUE)  %>% 
+  row_spec(0, bold = TRUE)
+```
+Data source: NYC Primary Land Use Tax Output (PLUTO)
+\newline
+\newline
+The majority of lots in Borough Park are zoned residential, particularly R5 and R6 zoning. R5 zoning produces lower density three- and four-family homes; R6 can produce multi-family buildings on smaller lots and denser, "tower in the park" developments on larger ones. The trend is similar for lot area and building area; 95% of the building area, for example, is R5 and R6 zoning. A small percentage of lots is C4-3 zoning, which allows for commercial and residential uses. The C4-3 lots reflect the presence of mixed use buildings with ground-floor storefronts in the neighborhood. There are no special districts in Borough Park. In general, the zoning inventory analysis aligns with my perception of the neighborhood as primarily low- and medium-density, with some mixed-use buildings on avenues and designated commercial areas.
+
+\newpage
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+\textbf{FAR Utilization Analysis for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+create_lutable2 <- function(df) {
+  df %>% 
+    group_by(zonedist1) %>%
+    summarize(across(c(total_unutilized,
+                       utilized,
+                       max_area_allow), sum, na.rm = T)) %>% 
+    ungroup() %>% 
+    mutate(per_unutil = round(total_unutilized * 100 / sum(total_unutilized, na.rm = T)),
+           per_util = round(utilized * 100 / sum(utilized, na.rm = T)),
+           per_max_allow = round(max_area_allow * 100 / sum(max_area_allow, na.rm = T))) %>% 
+    mutate(across(starts_with("per_"), ~str_c(., "%"))) %>% 
+    select(zonedist1, total_unutilized,
+           per_unutil, utilized,
+           per_util, max_area_allow,
+           per_max_allow)
+}
+
+df_sub %>% 
+  create_lutable2() %>% 
+  bind_rows(df_sub %>%
+              mutate(zonedist1 = "Total") %>% 
+              create_lutable2()) %>%
+  mutate(order = if_else(zonedist1 == "Total", 1, 0)) %>% 
+  arrange(order, -total_unutilized) %>% 
+  select(-"order") %>% 
+  rename_all(~c("Zoning Code", "Total Unutilized FAR (sqft)", "Share of Total Unutilized FAR",
+               "Total Utilized FAR (sqft)", "Share of Total Utilized FAR (sqft)",
+               "Total Max Floor Area Allowed (sqft)", "Share of Total Max Floor Area Allowed")) %>%
+  mutate(across(c("Total Unutilized FAR (sqft)",
+                  "Total Utilized FAR (sqft)",
+                  "Total Max Floor Area Allowed (sqft)"), ~scales::comma(., accuracy = 1))) %>% 
+  kbl(align=c(rep('l',times=7))) %>% 
+  kable_styling(position = "left",
+                latex_options = c("hold_position")) %>%
+  column_spec(1, width = "15em", bold = TRUE, border_left = TRUE) %>% 
+  column_spec(2:6, width = "7em") %>% 
+  column_spec(7, width = "7em", border_right = TRUE)  %>% 
+  row_spec(0, bold = TRUE)
+```
+
+Data source: NYC Primary Land Use Tax Output (PLUTO)
+\newline
+\newline
+Overall, the primary use in Borough Park is residential followed by mixed use (commercial and residential). There's around 5 million square feet of unutilized FAR, primarily among medium density residential lots and mixed use lots. There are a few lots (16) that are also zoned for manufacturing. The most unutilized FAR involves lots with R6 zoning. These lots could increase in density by more than 50%. Similar to the general patterns of land use in the neighborhood, R5 and C4-3 lots also have significant unutilized FAR. However, total utilized area exceeds the maximum allowable floor area for R5 lots. There are 571 lots overall where the utilized area exceeds the maximum allowable area either because the total building area is larger than the `FAR*lot area` or because the residential area is only a subset of the total building area. Many of these are lots with R5 or R6 zoning.
+\newline
+\newline
+In absolute terms, R5 lots have a higher amount of unutilized FAR, but C4-3 lots could increase their total utilized area by almost 100% if they were using the full FAR (i.e., the total unutilized area is almost equal to the total utilized area). The same zoning categories that have high amounts of unutilized FAR (R6, R5, and C4-3) also have high amounts of total utilized FAR. Since R6, R5, and C4-3 zoning types are the primary zoning types for the whole neighborhood, any changes to the R6, R5, and C4-3 requirements would have significant consequences. Efforts to modify the less dense R3-2 zoning requirements, which allow for one- and two-family homes, might be ineffective in a neighborhood like Borough Park. Most of the buildings are three-family homes or larger and already have unutilized FAR.
+\newline
+\newline
+This table demonstrates that, purely based on zoning, there is potential to increase density in Borough Park. However, increasing density would require modifying or knocking down existing structures, which is likely not desirable nor feasible. At the moment, there does not seem to be a strong reason to modify the zoning in the neighborhood; any new developments that make full use of the existing FAR restrictions would increase density.

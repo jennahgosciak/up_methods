@@ -1,0 +1,10 @@
+"0",""
+"0","df_19 <- get_acs(geography = ""tract"","
+"0","          variable  = varlist,"
+"0","          state = ""NY"","
+"0","          county = ""047"","
+"0","          year = 2019)"
+"2","Getting data from the 2015-2019 5-year ACS
+"
+"2","Fetching data by table type (""B/C"", ""S"", ""DP"") and combining the result.
+"

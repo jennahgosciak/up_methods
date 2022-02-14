@@ -1,0 +1,7 @@
+"0",""
+"0","rel_file <- read.csv(path(""01_input"", ""2010_rel_file.csv""), skip = 1, header = F)"
+"0",""
+"0","names(rel_file) <- rel_vars$varname"
+"0","rel_file %>% "
+"0","  filter(GEOID10 %in% sel_tracts) %>% "
+"0","  select(c(""HUPCT00"", ""HUPCT10""))"

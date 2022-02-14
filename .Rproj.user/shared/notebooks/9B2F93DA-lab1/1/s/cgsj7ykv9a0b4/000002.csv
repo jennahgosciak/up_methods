@@ -1,0 +1,3 @@
+"0","# load vars"
+"0","vars <- readxl::read_excel(path(""01_input"", ""census_vars.xlsx""), sheet = ""allvars"")"
+"0","vars"
