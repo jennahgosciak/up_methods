@@ -27,8 +27,6 @@ header-includes:
 Jennah Gosciak
 \newline
 February 21st, 2022 \newline
-\vspace{0.5cm}
-
 ```{r, include = FALSE}
 library(tidyverse)
 library(tidycensus)
@@ -63,8 +61,13 @@ df <- tbl(con, "mappluto_21v3") %>%
 
 stopifnot(length(unique(df$ct2010)) == 5)
 ```
+\onehalfspacing
 
-The zoning compliance table for Borough Park (table 1) shows that in general, with some deviations, the reality is consistent with what is zoned on paper. The three residential districts (R5 and R6) all have majority residential lots. According to the NYC Zoning and Land Use Map, R5 districts are "typically ...three-and four-story attached houses and small apartment houses" while R6 districts are "built-up, medium-density areas." R5 districts often act as a transition from low to medium density.  Still, there are some commercial, manufacturing, and other uses in these districts. Lots in the R5 district are more in alignment with the zoning code; 93% of lots are residential. However, the R6 district only has 88% residential lots. 12% of the lots are commercial or other land uses. While this isn't a large share of lots, it is a sizeable number (129 non-conforming lots) that suggests some areas in Borough Park may benefit from changes to the zoning code, e.g., adding more commercial districts or commercial overlays. 
+The zoning compliance table for Borough Park (table 1) shows that in general, with some deviations, the reality is consistent with what is zoned on paper. The three residential districts (R5 and R6) all have majority residential lots. According to the NYC Zoning and Land Use Map, R5 districts are "typically ...three-and four-story attached houses and small apartment houses" while R6 districts are "built-up, medium-density areas." R5 districts often act as a transition from low to medium density.  Still, there are some commercial, manufacturing, and other uses in these districts. Lots in the R5 district are more in alignment with the zoning code; 93% of lots are residential. However, the R6 district only has 88% residential lots. 12% of the lots are commercial or other land uses. While this isn't a large share of lots, it is a sizeable number (129 non-conforming lots) that suggests some areas in Borough Park may benefit from changes to the zoning code, e.g., adding more commercial districts or commercial overlays.
+
+The commercial and manufacturing districts (C4-3, C8-2, and M1-1), are much smaller than the residential districts, but the land use patterns do suggest that there could be better alignment. According to the NYC Zoning and Land Use Map, C4-3 districts are "regional commercial centers...that are located outside of the central business districts." The uses typically include speciality and department stores, theaters, and commercial office spaces. In Borough Park, the C4-3 district, in particular, has a high share of residential lots (85%) and only 15% of lots are actually used for commercial purposes. C8-2 and M1-1 have a more varied mix of land use types, but they comprise a small number of lots in total (together, only 23 lots). Given that there are many commercial uses in residential areas, it might make sense to expand the commercial zoning districts and add commercial overlays to some of the residential districts while converting some of the commercial districts to residential. This would improve the alignment of real land use patterns and on-paper zoning districts. Since the manufacturing district only has 16 lots, there may not be much value in changing the zoning there. However, only three of the 16 lots are actually used for manufacturing, so it might make sense to make the commercial or commercial and manufacturing mixed-use.
+
+In every zoning district in Borough Park, the majority of lots are unutilized. This further suggests that revisions to the zoning code may be necessary. C4-3 and R6 districts have the most unutilized lots: 99% and 92% respectively. These are also districts where the land use patterns most noticeably diverge from the zoning code. Given that Borough Park has received little attention in the citywide conversations about rezoning, it might make sense to rezone some areas in the neighborhood with particular focus on C4-3 and R6 districts. However, lots in the neighborhood are overall in alignment with the zoning code and there does not seem to be any need to urgently address these inconsistencies.
 
 ```{r, include = FALSE}
 lu_cat <- str_pad(1:11, width = 2, pad = "0", "left")
@@ -186,21 +189,22 @@ create_table <- function(df, v = 1) {
   } else {
     sel_cols <- 7:10
   }
+  
   tbl_exp <- df1 %>% 
     bind_rows(df2, df3)  %>% 
     mutate(across(starts_with("numlots"), ~if_else(is.na(.), as.double(0), as.double(.)))) %>% 
     mutate(across(starts_with("numlots"), ~scales::comma(., accuracy = 1))) %>% 
     mutate(across(starts_with("per_numlots"), ~if_else(is.na(.), "0%", .))) %>% 
     select(cat, landuse2, zone_cols[sel_cols]) %>% 
-    kbl(align=c(rep('l',times=(ncol(df1)-1))), format = "latex",
+    kbl(align=c(rep('l',times=length(sel_cols) + 1)), format = "latex",
         col.names = c(" ", "Category",
-                      rep(c("Count of Lots", "Share of Lots"), ((ncol(df1) - 2)/2)))) %>% 
+                      rep(c("Count of Lots", "Share of Lots"), ((length(sel_cols))/2)))) %>% 
     kable_styling(position = "left",
                   latex_options = c("hold_position")) %>%
     column_spec(1, width = "7em", bold = TRUE, border_left = TRUE) %>% 
     column_spec(2, width = "10em") %>% 
-    column_spec(3:(ncol(df1) - 1), width = "5em") %>% 
-    column_spec(ncol(df1), width = "4.5em", border_right = TRUE) %>% 
+    column_spec(3:(length(sel_cols) + 1), width = "5em") %>% 
+    column_spec(length(sel_cols) + 2, width = "4.5em", border_right = TRUE) %>% 
     collapse_rows(columns = 1) %>%
     row_spec(0, bold = TRUE) %>% 
       gsub("\\\\cline\\{3", "\\\\cline\\{1", .) %>% 
@@ -223,10 +227,12 @@ create_table <- function(df, v = 1) {
   }
 }
 ```
-
+\newpage
+\textbf{Appendix}
+\newline
 \setlength{\tabcolsep}{6pt}
 \renewcommand{\arraystretch}{1.2}
-\textbf{Table 1. Zoning Compliance Table for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+Table 1. Zoning Compliance Table for Borough Park (Census Tracts 232, 234, 472, 474, and 476)
 \vspace*{-\baselineskip}
 ```{r, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
 df_sub %>% 
@@ -239,7 +245,6 @@ df_sub %>%
   sub("begin\\{tabular\\}\\[t\\]\\{\\|", "begin\\{tabular\\}\\[t\\]\\{V\\{4\\}", .) %>% 
   sub("p\\{4.5em\\}\\|\\}", "p\\{5em\\}V\\{4\\}\\}", .)
 ```
-
 ```{r, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
 df_sub %>% 
   create_table(v = 2)  %>% 
@@ -251,9 +256,12 @@ df_sub %>%
   sub("begin\\{tabular\\}\\[t\\]\\{\\|", "begin\\{tabular\\}\\[t\\]\\{V\\{4\\}", .) %>% 
   sub("p\\{4.5em\\}\\|\\}", "p\\{5em\\}V\\{4\\}\\}", .)
 ```
+\singlespacing
 Data source: NYC Primary Land Use Tax Output (PLUTO) 21v3
 \newline
-\singlespacing
+Table note: last week's lab showed a single R3-2 lot in Borough Park. After looking into that lot more extensively, I think that PLUTO misclassified its census tract and community district. As a result, I removed it from this analysis.
+\newline
+\newline
 \textbf{Works Cited}
 \newline
 New York City's Zoning & Land Use Map. (2021). [https://zola.planning.nyc.gov/](https://zola.planning.nyc.gov/).
