@@ -1,0 +1,259 @@
+---
+title: "Lab 4: Zoning Compliance Analysis"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: TRUE
+fancy: true
+geometry: margin=0.5in
+documentclass: article
+fontsize: 11pt
+classoption: landscape
+header-includes:
+  \usepackage{setspace}
+  \usepackage{titling}
+  \setlength{\droptitle}{-10ex}
+  \pretitle{\begin{flushleft}\Large\bfseries}
+  \posttitle{\par\end{flushleft}}
+  \preauthor{\begin{flushleft}\Large}
+  \postauthor{\end{flushleft}}
+  \predate{\begin{flushleft}}
+  \postdate{\end{flushleft}}
+  \usepackage{boldline} 
+---
+
+\vspace{-2.2cm}
+\raggedright
+Jennah Gosciak
+\newline
+February 21st, 2022 \newline
+\vspace{0.5cm}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(tidycensus)
+library(fs)
+library(DBI)
+library(dbplyr)
+library(RPostgres)
+library(knitr)
+library(kableExtra)
+
+con <- dbConnect(Postgres(),
+  user = "furmandata",
+  password = rstudioapi::askForPassword(),
+  host = "fcdata.c7h93yqbqnvu.us-east-1.rds.amazonaws.com",
+  port = 5432,
+  dbname = "fcdata",
+  bigint = "integer"
+)
+
+source("../99_common.R")
+```
+```{r, include = FALSE}
+# Important link: http://maps.nyc.gov/doitt/nycitymap/
+sel_tracts <- c("232", "234",
+                       "472",
+                       "474",
+                       "476")
+
+df <- tbl(con, "mappluto_21v3") %>% 
+  filter((ct2010 %in% sel_tracts) & borough == "BK") %>% 
+  as.data.frame() 
+
+stopifnot(length(unique(df$ct2010)) == 5)
+```
+
+The zoning compliance table for Borough Park (table 1) shows that in general, with some deviations, the reality is consistent with what is zoned on paper. The three residential districts (R5 and R6) all have majority residential lots. According to the NYC Zoning and Land Use Map, R5 districts are "typically ...three-and four-story attached houses and small apartment houses" while R6 districts are "built-up, medium-density areas." R5 districts often act as a transition from low to medium density.  Still, there are some commercial, manufacturing, and other uses in these districts. Lots in the R5 district are more in alignment with the zoning code; 93% of lots are residential. However, the R6 district only has 88% residential lots. 12% of the lots are commercial or other land uses. While this isn't a large share of lots, it is a sizeable number (129 non-conforming lots) that suggests some areas in Borough Park may benefit from changes to the zoning code, e.g., adding more commercial districts or commercial overlays. 
+
+```{r, include = FALSE}
+lu_cat <- str_pad(1:11, width = 2, pad = "0", "left")
+lu_cat_new <- c(rep("Residential", 4), "Commercial", rep("Manufacturing", 2),
+                "Commercial", "Other", "Commercial", "Other")
+
+df_sub <- df %>% 
+  # recode land use
+  mutate(landuse2 = lu_cat_new[match(landuse, lu_cat)])
+
+df_sub %>% 
+  tablist_qc(landuse, landuse2)
+
+df_sub <- df_sub %>% 
+  mutate(zonedist = str_sub(zonedist1, 1, 1),
+         commarea = rowSums(select(., c("officearea", "retailarea", 
+                                        "garagearea", "strgearea", 
+                                        "otherarea")), na.rm = T)) %>% 
+  rowwise() %>% 
+  mutate(area_allowed = if_else(zonedist == "R",
+                                residfar * lotarea,
+                                commfar * lotarea),
+         area_allowed_sp = if_else(is.na(spdist1), 0, 
+                                   max(residfar, commfar, na.rm = T) * lotarea),
+         max_area_allow = if_else(is.na(spdist1), area_allowed, area_allowed_sp),
+         unutilized_res = if_else(is.na(spdist1), max(area_allowed - resarea, 
+                                                      0, na.rm = T), 0),
+         unutilized_comm_man = if_else(is.na(spdist1), 
+                                       max(area_allowed - commarea - factryarea, 
+                                           0, na.rm = T), 0),
+         unutilized_sp = if_else(is.na(spdist1), 0, 
+                                 max(area_allowed_sp - resarea - commarea - factryarea, 
+                                     0, na.rm = T)),
+         total_unutilized = case_when(!is.na(spdist1) ~ unutilized_sp,
+                                      zonedist == "R" ~ unutilized_res,
+                                      TRUE ~ unutilized_comm_man),
+         utilized = bldgarea,
+         lotunutilized = if_else(total_unutilized > 0 & !is.na(total_unutilized), 1, 0),
+         lotutilized = if_else(lotunutilized == 1, 0, 1)) %>% 
+  ungroup()
+
+df_sub %>% 
+  tablist_qc(zonedist, zonedist1)
+
+df_sub %>% 
+  select(c(zonedist, total_unutilized, utilized, max_area_allow))
+
+df_sub %>% 
+  select(c(unutilized_res, area_allowed, resarea)) %>% 
+  mutate(check = area_allowed - resarea)
+
+df_sub %>% 
+  select(c(unutilized_comm_man, area_allowed, commarea, factryarea)) %>% 
+  filter(commarea > 0)
+
+df_sub %>% 
+  select(c(area_allowed, residfar, lotarea, zonedist)) %>% 
+  rowwise() %>% 
+  mutate(check = residfar * lotarea)
+
+df_sub %>% 
+  assertr::verify(area_allowed_sp == 0)
+
+df_sub %>% 
+  filter(max_area_allow < utilized) %>% 
+  mutate(check = residfar * lotarea) %>% 
+  select("zonedist1", "bldgarea", "residfar", "lotarea", "max_area_allow", "unutilized_res",  "resarea", check, "yearbuilt", matches("area"))
+```
+
+```{r, include = FALSE}
+create_table <- function(df, v = 1) {
+  zone_cat <- df %>% 
+    arrange(landuse2, zonedist1) %>% 
+    pull(zonedist1) %>% 
+    unique()
+  
+  zone_cols <- zone_cat %>%
+    map(~c(str_c("numlots_", .), str_c("per_numlots_", .))) %>% 
+    unlist()
+    
+   df1 <- df %>% 
+    group_by(landuse2, zonedist1) %>%
+    filter(!is.na(landuse2)) %>% 
+    summarize(numlots = n_distinct(bbl)) %>% 
+    group_by(zonedist1) %>% 
+    mutate(per_numlots = round(numlots * 100 / sum(numlots, na.rm = T), 1)) %>% 
+    mutate(across(starts_with("per_"), ~str_c(., "%"))) %>% 
+    pivot_wider(names_from = "zonedist1", values_from = c("numlots", "per_numlots")) %>% 
+    mutate(cat = "Land Use") %>% 
+    select(cat, landuse2, all_of(zone_cols))
+  
+  df2 <- df %>% 
+    group_by(zonedist1) %>% 
+    filter(!is.na(landuse2)) %>% 
+    summarize(across(c(lotunutilized, lotutilized), .fns = lst(sum,
+                                                               mean), na.rm = T)) %>% 
+  pivot_longer(-zonedist1) %>% 
+  mutate(landuse2 = if_else(str_detect(name, "lotunutilized"), 
+                            "Unutilized", "Utilized"),
+         cat = "Utilization",
+         type = if_else(str_detect(name, "sum"), "numlots", "per_numlots")) %>% 
+  pivot_wider(id_cols = c("cat", "landuse2"), names_from = c("type","zonedist1"), 
+              values_from = c("value")) %>% 
+  mutate(across(starts_with("per_numlots"), ~round(. * 100 / sum(., na.rm = T), 1))) %>% 
+  mutate(across(starts_with("per_"), ~str_c(., "%")))
+  
+  df3 <- df %>% 
+    group_by(zonedist1) %>% 
+    summarize(numlots = n_distinct(bbl)) %>% 
+    ungroup() %>% 
+    mutate(per_numlots = "100.0%") %>% 
+    pivot_wider(names_from = "zonedist1", values_from = c("numlots", "per_numlots")) %>% 
+    mutate(cat = "",
+           landuse2 = "Grand Total") %>% 
+    select(cat, landuse2, all_of(zone_cols))
+  
+  if (v == 1) {
+    sel_cols <- 1:6
+  } else {
+    sel_cols <- 7:10
+  }
+  tbl_exp <- df1 %>% 
+    bind_rows(df2, df3)  %>% 
+    mutate(across(starts_with("numlots"), ~if_else(is.na(.), as.double(0), as.double(.)))) %>% 
+    mutate(across(starts_with("numlots"), ~scales::comma(., accuracy = 1))) %>% 
+    mutate(across(starts_with("per_numlots"), ~if_else(is.na(.), "0%", .))) %>% 
+    select(cat, landuse2, zone_cols[sel_cols]) %>% 
+    kbl(align=c(rep('l',times=(ncol(df1)-1))), format = "latex",
+        col.names = c(" ", "Category",
+                      rep(c("Count of Lots", "Share of Lots"), ((ncol(df1) - 2)/2)))) %>% 
+    kable_styling(position = "left",
+                  latex_options = c("hold_position")) %>%
+    column_spec(1, width = "7em", bold = TRUE, border_left = TRUE) %>% 
+    column_spec(2, width = "10em") %>% 
+    column_spec(3:(ncol(df1) - 1), width = "5em") %>% 
+    column_spec(ncol(df1), width = "4.5em", border_right = TRUE) %>% 
+    collapse_rows(columns = 1) %>%
+    row_spec(0, bold = TRUE) %>% 
+      gsub("\\\\cline\\{3", "\\\\cline\\{1", .) %>% 
+    row_spec(7, background = "#B4C6E7", bold = TRUE)
+  
+  if (v == 1) {
+    tbl_exp %>% 
+      add_header_above(c(" " = 1, "Zoning Code" = 1,
+                         "C4-3" = 2, "C8-2" = 2, "M1-1" = 2),
+                       border_left = TRUE,
+                       border_right = TRUE,
+                       bold = TRUE)
+  } else {
+    tbl_exp %>% 
+      add_header_above(c(" " = 1, "Zoning Code" = 1,
+                         "R5" = 2, "R6" = 2),
+                       border_left = TRUE,
+                       border_right = TRUE,
+                       bold = TRUE)
+  }
+}
+```
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+\textbf{Table 1. Zoning Compliance Table for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+\vspace*{-\baselineskip}
+```{r, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+df_sub %>% 
+  create_table() %>% 
+  gsub("\\\\hline", "\\\\hlineB\\{4\\}", .) %>% 
+  sub("\\|c\\|", "V\\{4\\}c\\|", .) %>% 
+  gsub("\\\\cellcolor\\[HTML\\]\\{B4C6E7\\}\\{\\\\textbf\\{\\\\textbf\\{\\}\\}\\}", 
+       "\\\\textbf{\\\\textbf\\{\\}\\}", .) %>% 
+  sub("c\\|\\}\\{\\\\textbf\\{M1-1", "cV\\{4\\}\\}\\{\\\\textbf\\{M1-1", .) %>% 
+  sub("begin\\{tabular\\}\\[t\\]\\{\\|", "begin\\{tabular\\}\\[t\\]\\{V\\{4\\}", .) %>% 
+  sub("p\\{4.5em\\}\\|\\}", "p\\{5em\\}V\\{4\\}\\}", .)
+```
+
+```{r, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+df_sub %>% 
+  create_table(v = 2)  %>% 
+  gsub("\\\\hline", "\\\\hlineB\\{4\\}", .) %>% 
+  sub("\\|c\\|", "V\\{4\\}c\\|", .) %>% 
+  gsub("\\\\cellcolor\\[HTML\\]\\{B4C6E7\\}\\{\\\\textbf\\{\\\\textbf\\{\\}\\}\\}", 
+       "\\\\textbf{\\\\textbf\\{\\}\\}", .) %>% 
+  sub("c\\|\\}\\{\\\\textbf\\{M1-1", "cV\\{4\\}\\}\\{\\\\textbf\\{M1-1", .) %>% 
+  sub("begin\\{tabular\\}\\[t\\]\\{\\|", "begin\\{tabular\\}\\[t\\]\\{V\\{4\\}", .) %>% 
+  sub("p\\{4.5em\\}\\|\\}", "p\\{5em\\}V\\{4\\}\\}", .)
+```
+Data source: NYC Primary Land Use Tax Output (PLUTO) 21v3
+\newline
+\singlespacing
+\textbf{Works Cited}
+\newline
+New York City's Zoning & Land Use Map. (2021). [https://zola.planning.nyc.gov/](https://zola.planning.nyc.gov/).

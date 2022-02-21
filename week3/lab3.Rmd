@@ -26,7 +26,7 @@ header-includes:
 Jennah Gosciak
 \newline
 February 14th, 2022 \newline
-Census Tracts Representing Borough Park: 232, 234, 472, 474, and 476
+Census Tracts Representing Brighton Beach: 366, 364, 362, 610.04, 360.01, 360.02, 610.02, 610.03
 \vspace{0.5cm}
 
 ```{r, include = FALSE}

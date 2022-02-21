@@ -122,7 +122,7 @@ df %>%
                "Lot Area (sf)", "Percentage of Total Lot Area (sf)",
                "Building Floor Area (sf)", "Percentage of Total Building Floor Area (sf)")) %>%
   mutate(across(c("Number of Lots", "Lot Area (sf)",
-                  "Building Floor Area (sf)"), ~scales::comma(., accuracy = 10))) %>% 
+                  "Building Floor Area (sf)"), ~scales::comma(., accuracy = 1))) %>% 
   kbl(align=c(rep('l',times=7))) %>% 
   kable_styling(position = "left",
                 latex_options = c("hold_position")) %>%

@@ -1,0 +1,147 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  landscape]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Lab 4: Zoning Compliance Analysis},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace} \usepackage{titling} \setlength{\droptitle}{-10ex} \pretitle{\begin{flushleft}\Large\bfseries} \posttitle{\par\end{flushleft}} \preauthor{\begin{flushleft}\Large} \postauthor{\end{flushleft}} \predate{\begin{flushleft}} \postdate{\end{flushleft}} \usepackage{boldline}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Lab 4: Zoning Compliance Analysis}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\vspace{-2.2cm}
+\raggedright
+
+Jennah Gosciak \newline February 21st, 2022 \newline \vspace{0.5cm}
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+\textbf{Table 1. Zoning Compliance Table for Borough Park (Census Tracts 232, 234, 472, 474, and 476)}
+\vspace*{-\baselineskip}
+
+\begin{tabular}[t]{V{4}>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{10em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}V{4}}
+\hlineB{4}
+\multicolumn{1}{V{4}c|}{\textbf{ }} & \multicolumn{1}{c|}{\textbf{Zoning Code}} & \multicolumn{2}{c|}{\textbf{C4-3}} & \multicolumn{2}{c|}{\textbf{C8-2}} & \multicolumn{2}{cV{4}}{\textbf{M1-1}} \\
+\cline{2-2} \cline{3-4} \cline{5-6} \cline{7-8}
+\textbf{ } & \textbf{Category} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots}\\
+\hlineB{4}
+ & Commercial & 11 & 15.3\% & 2 & 28.6\% & 3 & 18.8\%\\
+\cline{2-8}
+ & Manufacturing & 0 & 0\% & 3 & 42.9\% & 3 & 18.8\%\\
+\cline{2-8}
+ & Other & 0 & 0\% & 1 & 14.3\% & 3 & 18.8\%\\
+\cline{2-8}
+\multirow{-4}{7em}{\raggedright\arraybackslash \textbf{Land Use}} & Residential & 61 & 84.7\% & 1 & 14.3\% & 7 & 43.8\%\\
+\cline{1-8}
+ & Unutilized & 71 & 98.6\% & 6 & 85.7\% & 14 & 87.5\%\\
+\cline{2-8}
+\multirow{-2}{7em}{\raggedright\arraybackslash \textbf{Utilization}} & Utilized & 1 & 1.4\% & 1 & 14.3\% & 2 & 12.5\%\\
+\cline{1-8}
+\textbf{\textbf{}} & \cellcolor[HTML]{B4C6E7}{\textbf{Grand Total}} & \cellcolor[HTML]{B4C6E7}{\textbf{72}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{7}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{16}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}}\\
+\hlineB{4}
+\end{tabular}
+
+\begin{tabular}[t]{V{4}>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{10em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}V{4}}
+\hlineB{4}
+\multicolumn{1}{V{4}c|}{\textbf{ }} & \multicolumn{1}{c|}{\textbf{Zoning Code}} & \multicolumn{2}{c|}{\textbf{R5}} & \multicolumn{2}{c|}{\textbf{R6}} & \multicolumn{2}{c|}{\textbf{R3-2}} \\
+\cline{2-2} \cline{3-4} \cline{5-6} \cline{7-8}
+\textbf{ } & \textbf{Category} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots}\\
+\hlineB{4}
+ & Commercial & 57 & 5\% & 98 & 9.3\% & 0 & 0\%\\
+\cline{2-8}
+ & Manufacturing & 5 & 0.4\% & 4 & 0.4\% & 0 & 0\%\\
+\cline{2-8}
+ & Other & 22 & 1.9\% & 27 & 2.5\% & 0 & 0\%\\
+\cline{2-8}
+\multirow{-4}{7em}{\raggedright\arraybackslash \textbf{Land Use}} & Residential & 1,067 & 92.7\% & 930 & 87.8\% & 1 & 100\%\\
+\cline{1-8}
+ & Unutilized & 871 & 75.7\% & 972 & 91.8\% & 0 & 0\%\\
+\cline{2-8}
+\multirow{-2}{7em}{\raggedright\arraybackslash \textbf{Utilization}} & Utilized & 280 & 24.3\% & 87 & 8.2\% & 1 & 100\%\\
+\cline{1-8}
+\textbf{\textbf{}} & \cellcolor[HTML]{B4C6E7}{\textbf{Grand Total}} & \cellcolor[HTML]{B4C6E7}{\textbf{1,152}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{1,060}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{1}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}}\\
+\hlineB{4}
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) 21v3 \newline
+\singlespacing \textbf{Works Cited} \newline New York City's Zoning \&
+Land Use Map. (2021). \url{https://zola.planning.nyc.gov/}.
+
+\end{document}
