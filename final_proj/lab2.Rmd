@@ -1,0 +1,136 @@
+---
+title: "Lab 2: Land Use Inventory Table"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: TRUE
+fancy: true
+geometry: margin=0.5in
+documentclass: article
+fontsize: 11pt
+classoption: landscape
+header-includes:
+  \usepackage{setspace}
+  \usepackage{titling}
+  \setlength{\droptitle}{-10ex}
+  \pretitle{\begin{flushleft}\Large\bfseries}
+  \posttitle{\par\end{flushleft}}
+  \preauthor{\begin{flushleft}\Large}
+  \postauthor{\end{flushleft}}
+  \predate{\begin{flushleft}}
+  \postdate{\end{flushleft}}
+---
+
+\vspace{-2.2cm}
+\raggedright
+Jennah Gosciak
+\newline
+February 21st, 2022
+\vspace{0.5cm}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(tidycensus)
+library(fs)
+library(DBI)
+library(dbplyr)
+library(RPostgres)
+library(knitr)
+library(kableExtra)
+
+con <- dbConnect(Postgres(),
+  user = "furmandata",
+  password = rstudioapi::askForPassword(),
+  host = "fcdata.c7h93yqbqnvu.us-east-1.rds.amazonaws.com",
+  port = 5432,
+  dbname = "fcdata",
+  bigint = "integer"
+)
+
+source("../99_common.R")
+```
+```{r, include = FALSE}
+# Important link: http://maps.nyc.gov/doitt/nycitymap/
+# need to collapse categories for this
+lu_codes <- str_pad(c(0,1:11), width = 2, pad = "0")
+lu_desc <- c("Residential (One- & Two-Family Buildings, Multifamily Walk-up Buildings, & Multifamily Elevator Buildings)",
+  "One or Two Family Buildings",
+  "Multi-Family Walk-Up Buildings",
+  "Multi-Family Elevator Buildings",
+  "Mixed Residential & Commerical Buildings",
+  "Commercial & Office Buildings",
+  "Industrial & Manufacturing Buildings",
+  "Transportation & Utility",
+  "Public Facilities & Institutions",
+  "Open Space",
+  "Parking Facilities",
+  "Vacant Land"
+)
+
+sel_tracts <- c("366", "364",
+                "362", "360.01",
+                "360.02", "610.02",
+                "610.04", "610.03")
+
+df <- tbl(con, "mappluto_21v3") %>% 
+  filter((ct2010 %in% sel_tracts) & borough == "BK") %>% 
+  as.data.frame() 
+
+stopifnot(length(unique(df$ct2010)) == 8)
+
+df <- df %>% 
+  filter(!is.na(landuse)) %>% 
+  mutate(landuse_orig = landuse,
+         landuse = case_when(landuse %in% c("01", "02", "03") ~ "00",
+                             TRUE ~ landuse),
+         land_use_desc = lu_desc[match(landuse, lu_codes)],
+         land_use_desc = factor(land_use_desc, levels = lu_desc,
+                                ordered = T))
+
+# check recoding
+df %>% 
+  tablist_qc(landuse, land_use_desc, landuse_orig)
+```
+```{r, include = F}
+create_lutable <- function(df) {
+  df %>% 
+    group_by(land_use_desc) %>%
+    summarize(numlots = n_distinct(bbl),
+              lotarea = sum(lotarea, na.rm = T),
+              bldgarea = sum(bldgarea, na.rm = T)) %>% 
+    ungroup() %>% 
+    mutate(per_numlots = round(numlots * 100 / sum(numlots, na.rm = T)),
+           per_lotarea = round(lotarea * 100 / sum(lotarea, na.rm = T)),
+           per_bldgarea = round(bldgarea * 100 / sum(bldgarea, na.rm = T))) %>% 
+    mutate(across(starts_with("per_"), ~str_c(., "%"))) %>% 
+    select(land_use_desc,
+           numlots, per_numlots,
+           lotarea, per_lotarea,
+           bldgarea, per_bldgarea)
+}
+```
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+```{r, echo = FALSE}
+df %>% 
+  create_lutable() %>% 
+  bind_rows(df %>%
+              mutate(land_use_desc = "Total") %>% 
+              create_lutable()) %>%
+  rename_all(~c("Land Use", "Number of Lots", "Percentage of Total Number of Lots (%)",
+               "Lot Area (sf)", "Percentage of Total Lot Area (sf)",
+               "Building Floor Area (sf)", "Percentage of Total Building Floor Area (sf)")) %>%
+  mutate(across(c("Number of Lots", "Lot Area (sf)",
+                  "Building Floor Area (sf)"), ~scales::comma(., accuracy = 1))) %>% 
+  kbl(align=c(rep('l',times=7))) %>% 
+  kable_styling(position = "left",
+                latex_options = c("hold_position")) %>%
+  column_spec(1, width = "15em", bold = TRUE, border_left = TRUE) %>% 
+  column_spec(2:6, width = "7em") %>% 
+  column_spec(7, width = "7em", border_right = TRUE)  %>% 
+  row_spec(0, bold = TRUE)
+```
+Data source: NYC Primary Land Use Tax Output (PLUTO)
+
+
