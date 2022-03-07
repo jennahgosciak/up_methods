@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Maps
+```{r}
+library(tidyverse)
+library(tidycensus)
+library(fs)
+library(sf)
+library(assertr)
+
+sel_tracts <- c("36047036600",
+                  "36047036400",
+                  "36047036200",
+                  "36047036001",
+                  "36047036002",
+                  "36047061002",
+                  "36047061004",
+                  "36047061003")
+
+colors <- c("#264653", "#2a9d8f", "#ca6702", "#9b2226", "#e9d8a6", "#b5179e", "#577590")
+```
+```{r}
+## create map of census tracts
+nta <- st_read("https://data.cityofnewyork.us/resource/93vf-i5bz.geojson") %>% 
+  filter(str_detect(ntaname, "Brighton Beach"))
+nta
+
+tracts <- st_read("https://data.cityofnewyork.us/resource/i69b-3rdj.geojson?$limit=10000") %>% 
+  filter(str_detect(ntaname, "Brighton Beach")) %>% 
+  filter(ct2010 %in% str_replace_all(sel_tracts, "36047", ""))
+tracts
+
+tracts %>% 
+  as.data.frame() %>% 
+  verify(nrow(.) == 8)
+
+streets <- st_read("https://data.cityofnewyork.us/resource/8rma-cm9c.geojson?$limit=100000&$where=borocode='3'")
+streets
+
+streets %>% 
+  st_write(path("00_data", "streets.geojson"),
+           delete_dsn = TRUE)
+```
+
+```{r}
+boros <- st_read("https://data.cityofnewyork.us/resource/7t3b-ywvw.geojson") %>% 
+  st_transform(2263) %>% 
+  filter(boro_name == "Brooklyn")
+
+boros %>% 
+  st_write(path("00_data", "bk.geojson"),
+           delete_dsn = TRUE)
+
+nta %>% 
+  st_write(path("00_data", "brighton_nta.geojson"),
+           delete_dsn = TRUE)
+
+nta %>% 
+  st_transform(2263) %>% 
+  ggplot() +
+  geom_sf(data = boros, fill = NA, color = "black") +
+  geom_sf(data = streets, fill = NA, color = "gray") +
+  geom_sf(fill = NA, color = colors[2]) +
+  theme_void()
+
+ggsave(path("02_output", "tract_map2.pdf"))
+```
+
+```{r}
+## load floodplain
+fema_100 <- st_read("https://data.cityofnewyork.us/resource/inra-wqx3.geojson?$limit=10000")
+fema_100
+
+fema_100 %>% 
+  st_transform(2263) %>% 
+  st_intersection(boros) %>% 
+  st_write(path("00_data", "fema_100.geojson"),
+           delete_dsn = TRUE)
+
+fema_500 <- st_read("https://data.cityofnewyork.us/resource/27ya-gqtm.geojson?$limit=10000")
+fema_500
+
+fema_500 %>% 
+  st_transform(2263) %>% 
+  st_intersection(boros) %>% 
+  st_write(path("00_data", "fema_500.geojson"),
+           delete_dsn = TRUE)
+```
+
+```{r}
+## nhood_summary_extent
+streets_crop <- st_crop(streets %>% 
+                          st_transform(2263),
+               xmin = 978467.6002, xmax = 1006332.1836, ymin = 143066.8352, ymax = 165202.2519)
+streets_crop
+```
+
+

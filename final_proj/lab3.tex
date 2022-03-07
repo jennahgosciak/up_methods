@@ -1,0 +1,143 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  landscape]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Lab 3: Zoning Analysis},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace} \usepackage{titling} \setlength{\droptitle}{-10ex} \pretitle{\begin{flushleft}\Large\bfseries} \posttitle{\par\end{flushleft}} \preauthor{\begin{flushleft}\Large} \postauthor{\end{flushleft}} \predate{\begin{flushleft}} \postdate{\end{flushleft}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Lab 3: Zoning Analysis}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\vspace{-2.2cm}
+\raggedright
+
+Jennah Gosciak \newline February 21st, 2022 \newline
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+\textbf{Zoning Inventory Analysis for Brighton Beach}
+
+\begin{tabular}[t]{|>{\raggedright\arraybackslash}p{15em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|}
+\hline
+\textbf{Zoning Code} & \textbf{Number of Lots} & \textbf{Percentage of Total Number of Lots (\%)} & \textbf{Lot Area (sf)} & \textbf{Percentage of Total Lot Area (sf)} & \textbf{Building Floor Area (sf)} & \textbf{Percentage of Total Building Floor Area (sf)}\\
+\hline
+\textbf{R6} & 1,686 & 91\% & 5,483,775 & 63\% & 9,635,826 & 57\%\\
+\hline
+\textbf{R7-1} & 93 & 5\% & 1,941,972 & 22\% & 6,822,738 & 41\%\\
+\hline
+\textbf{R3-1} & 54 & 3\% & 281,898 & 3\% & 201,306 & 1\%\\
+\hline
+\textbf{C8-1} & 11 & 1\% & 124,117 & 1\% & 121,778 & 1\%\\
+\hline
+\textbf{PARK} & 2 & 0\% & 850,732 & 10\% & 25,712 & 0\%\\
+\hline
+\textbf{Total} & 1,846 & 100\% & 8,682,494 & 100\% & 16,807,360 & 100\%\\
+\hline
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) \newpage
+\setlength{\tabcolsep}{6pt}
+
+\renewcommand{\arraystretch}{1.2}
+
+\textbf{FAR Utilization Analysis for Brighton Beach}
+
+\begin{tabular}[t]{|>{\raggedright\arraybackslash}p{15em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{7em}|}
+\hline
+\textbf{Zoning Code} & \textbf{Total Unutilized FAR (sqft)} & \textbf{Share of Total Unutilized FAR} & \textbf{Total Utilized FAR (sqft)} & \textbf{Share of Total Utilized FAR (sqft)} & \textbf{Total Max Floor Area Allowed (sqft)} & \textbf{Share of Total Max Floor Area Allowed}\\
+\hline
+\textbf{R6} & 6,675,941 & 80\% & 9,635,826 & 57\% & 13,325,573 & 66\%\\
+\hline
+\textbf{R7-1} & 1,626,601 & 19\% & 6,822,738 & 41\% & 6,680,384 & 33\%\\
+\hline
+\textbf{C8-1} & 43,687 & 1\% & 121,778 & 1\% & 124,117 & 1\%\\
+\hline
+\textbf{R3-1} & 12,646 & 0\% & 201,306 & 1\% & 140,949 & 1\%\\
+\hline
+\textbf{PARK} & 0 & 0\% & 25,712 & 0\% & 0 & 0\%\\
+\hline
+\textbf{Total} & 8,358,876 & 100\% & 16,807,360 & 100\% & 20,271,023 & 100\%\\
+\hline
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO)
+
+\end{document}

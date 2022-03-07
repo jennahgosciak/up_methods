@@ -1,0 +1,263 @@
+---
+title: "Urban Economics: hw2"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(fs)
+library(sf)
+library(assertr)
+library(readxl)
+library(officer)
+library(flextable)
+
+colors <- c("#264653", "#2a9d8f", "#ca6702", "#9b2226", "#e9d8a6", "#b5179e", "#577590")
+```
+
+```{r}
+newnames <- c("city", "land_area", "distance_cbd", "pop_1970",
+              "pop_1990", "pop_2000", "pop_2010", "pop_2019",
+              "inc_1990", "inc_2000", "inc_2010", "inc_2019",
+              "pov_2019")
+
+## load df
+root <- "C:/Users/Jennah/iCloudDrive/Desktop/Wagner/UrbanEconomics/hw2"
+df <- read_excel(path(root, "Urban Econ 2022 Assignment 2 Data.xlsx"), col_names = newnames,
+                 skip = 6)
+## create pop density
+df <- df %>% 
+  rowwise() %>% 
+  mutate(dens_2019 = pop_2019 / land_area) %>% 
+  filter(!is.na(land_area)) %>% 
+  ungroup()
+
+df
+```
+
+```{r}
+create_scatter <- function(df, var, lab, exp_lab) {
+  
+  var <- enquo(var)
+  df %>% 
+  ggplot(aes(distance_cbd, !!var)) +
+  geom_point(color=colors[2]) +
+  theme_classic() +
+  labs(x = "Distance from CBD",
+       y = lab) +
+  scale_y_continuous(labels = scales::comma) +
+    theme(axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0))
+  
+  ggsave(path("figs", paste0(exp_lab, ".png")), width = 10)
+  ggsave(path("figs", paste0(exp_lab, ".pdf")), width = 10)
+}
+
+create_scatter(df, dens_2019, "Population density\nin 2019\n(people per sq. mi.)",
+               "popdens_2019")
+
+create_scatter(df, inc_2019, "Median income\nin 2019 ($)",
+               "hhinc_2019")
+
+create_scatter(df, pov_2019, "Poverty rate\nin 2019",
+               "pov_2019")
+```
+```{r}
+df %>% 
+  mutate(lab = if_else(land_area < 15, "< 15 mi.", ">= 15 mi.")) %>% 
+  tablist_qc(lab, distance_cbd)
+```
+
+```{r}
+df_sum <- df %>% 
+  mutate(lab = if_else(distance_cbd < 15, "< 15 mi.", ">= 15 mi.")) %>% 
+  group_by(lab) %>% 
+  summarize(across(c(pop_1970, pop_1990, pop_2000, pop_2019), ~scales::comma(sum(., na.rm = T)))) %>% 
+  bind_rows(df %>% 
+    summarize(across(c(pop_1970, pop_1990, pop_2000, pop_2019), ~scales::comma(sum(., na.rm = T)))) %>%
+    mutate(lab = "Total"))
+
+df_sum
+
+ft <- df_sum %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_header_labels(values = list(lab = "",
+                                  pop_1970 = "1970",
+                                  pop_1990 = "1990",
+                                  pop_2000 = "2000",
+                                  pop_2019 = "2019")) %>%
+  border_remove() %>% 
+  border(border.top = fp_border(color = "gray") ) %>% 
+  border_outer(part="all", border = fp_border(color = "black", width = 2) )
+
+ft
+
+ft %>% 
+  save_as_docx(path = path("tbls", "pop_summary.docx"))
+```
+
+```{r}
+# calc percent change
+# What was the percentage change in the population living within 15 miles 
+# of Boston during 1970-1990 and from 1990-2019?
+
+ft2 <- df %>% 
+  mutate(lab = if_else(distance_cbd < 15, "< 15 mi.", ">= 15 mi.")) %>% 
+  group_by(lab) %>% 
+  summarize(across(c(pop_1970, pop_1990, pop_2000, pop_2019), sum, na.rm = T)) %>% 
+  rowwise() %>% 
+  mutate(perchange_1990_1970 = round(100*((pop_1990/pop_1970) - 1), 2),
+         perchange_2019_1990 = round(100*((pop_2019/pop_1990) - 1), 2)) %>% 
+  select(c(lab, perchange_1990_1970, perchange_2019_1990)) %>% 
+  ungroup() %>% 
+  bind_rows(
+    df %>% 
+      summarize(across(c(pop_1970, pop_1990, pop_2000, pop_2019), sum, na.rm = T)) %>% 
+      rowwise() %>% 
+      mutate(perchange_1990_1970 = round(100*((pop_1990/pop_1970) - 1),2),
+             perchange_2019_1990 = round(100*((pop_2019/pop_1990) - 1), 2)) %>%
+      mutate(lab = "Total") %>% 
+      select(c(lab, perchange_1990_1970, perchange_2019_1990)) %>% 
+      ungroup()
+  ) %>% 
+  mutate(across(starts_with("perchange"), ~str_c(., "%"))) %>% 
+  flextable() %>% 
+  autofit()  %>%
+  delete_part(part = "header") %>% 
+  add_header(values = c(lab = "",
+                                  perchange_1990_1970 = "1970-1990",
+                                  perchange_2019_1990 = "1990-2019")) %>% 
+  add_header(top= TRUE, values= c(lab ="",
+                                  perchange_1990_1970 = "Percent Change",
+                                  perchange_2019_1990 = "Percent Change")) %>%
+  align(i=1, align = "center", part = "header") %>% 
+  merge_h(part = "header") %>% 
+  #border_remove() %>% 
+  border(border.top = fp_border(color = "gray") ) %>% 
+  border(i = 1,
+         j = 2, part="header", border.right = fp_border(color = "black", width = 2)) %>% 
+  border_outer(part="all", border = fp_border(color = "black", width = 2))
+
+ft2
+
+ft2 %>% 
+  save_as_docx(path = path("tbls", "perchange_summary.docx"))
+```
+
+```{r}
+# average change in median income
+df_hhinc <- df %>% 
+  mutate(lab = case_when(distance_cbd < 5 ~ "5 miles",
+                         distance_cbd < 10 ~ "5-10 miles",
+                         distance_cbd < 15 ~ "10-15 miles",
+                         distance_cbd >= 15 ~ ">= 15 miles"),
+         lab = factor(lab, levels = c("5 miles", "5-10 miles", "10-15 miles",
+                                      ">= 15 miles", "Total"), ordered = T)) %>% 
+  rowwise() %>% 
+  mutate(perchange_inc_2000_1990 = 100*((inc_2000/inc_1990) - 1),
+         perchange_inc_2019_2010 = 100*((inc_2019/inc_2010) - 1)) %>% 
+  ungroup() 
+
+# df_hhinc %>% 
+#   tablist_qc(distance_cbd, lab)
+
+ft3 <- df_hhinc %>% 
+  group_by(lab) %>%
+  summarize(across(c(perchange_inc_2000_1990,
+                     perchange_inc_2019_2010), ~str_c(round(mean(., na.rm = T), 2), "%"))) %>% 
+  bind_rows(
+    df_hhinc %>% 
+      summarize(across(c(perchange_inc_2000_1990,
+                       perchange_inc_2019_2010), 
+                       ~str_c(round(mean(., na.rm = T), 2), "%"))) %>% 
+      mutate(lab = "Total")
+  ) %>% 
+  flextable() %>% 
+  autofit()  %>%
+  delete_part(part = "header") %>% 
+  add_header(values = c(lab = "",
+                                  perchange_inc_2000_1990 = "1990-2000",
+                                  perchange_inc_2019_2010 = "2010-2019")) %>%
+  add_header(top= TRUE, values= c(lab = "",
+                                  perchange_inc_2000_1990 = "Average Change in Median Income",
+                                  perchange_inc_2019_2010 = "Average Change in Median Income")) %>%
+  align(i=1, align = "center", part = "header") %>% 
+  merge_h(part = "header") %>% 
+  #border_remove() %>% 
+  border(border.top = fp_border(color = "gray") ) %>% 
+  border(i = 1,
+         j = 2, part="header", border.right = fp_border(color = "black", width = 2)) %>% 
+  border_outer(part="all", border = fp_border(color = "black", width = 2))
+
+ft3 %>% 
+  save_as_docx(path = path("tbls", "avginc_summary.docx"))
+```
+
+## Mapping
+
+```{r}
+# load towns shp
+towns <- st_read(path(root, "Towns", "TOWNS_POLY.shp"))
+towns
+
+bos_msa <- st_read(path(root, "Boston MSA", "Boston_MSA_FINAL.shp"))
+bos_msa
+
+df_perchange <- df %>% 
+  rowwise() %>% 
+  mutate(perchange_1970_2019 = round(100*((pop_2019/pop_1970) - 1), 2),
+         city = str_to_sentence(city)) %>% 
+  ungroup()
+df_perchange
+
+bos_msa_mgd <- bos_msa %>% 
+  mutate(city = str_to_sentence(TOWN)) %>% 
+  left_join(df_perchange, by = "city")
+```
+
+```{r}
+bos_msa_mgd %>% 
+  ggplot() +
+  geom_sf(data = towns, fill = "gray", color = NA) +
+  geom_sf(aes(fill = perchange_1970_2019), color = "#A7A7A7", size = 0.01) +
+  scale_fill_viridis_c(option = "B") +
+  theme_void() +
+  labs(fill = "Percent Change\nin Population\n(1970-2019)")
+
+ggsave(path("figs", "perchange_map.pdf"), width = 10, height = 10)
+ggsave(path("figs", "perchange_map.png"), width = 10, height = 10)
+```
+
+```{r}
+bos_msa_mgd %>% 
+  ggplot() +
+  geom_sf(data = towns, fill = "gray", color = NA) +
+  geom_sf(aes(fill = inc_2019), color = "#A7A7A7", size = 0.01) +
+  scale_fill_viridis_c(option = "B") +
+  theme_void() +
+  labs(fill = "Median Income\n(2019)")
+
+ggsave(path("figs", "medinc_map.pdf"), width = 10, height = 10)
+ggsave(path("figs", "medinc_map.png"), width = 10, height = 10)
+```
+
+```{r}
+bos_msa_mgd %>% 
+  ggplot() +
+  geom_sf(data = towns, fill = "gray", color = NA) +
+  geom_sf(aes(fill = pov_2019), color = "#A7A7A7", size = 0.01) +
+  scale_fill_viridis_c(option = "B") +
+  theme_void() +
+  labs(fill = "Poverty Rate\n(2019)")
+
+ggsave(path("figs", "pov_map.pdf"), width = 10, height = 10)
+ggsave(path("figs", "pov_map.png"), width = 10, height = 10)
+```
+
+
+
+
+
+
+
+

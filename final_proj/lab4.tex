@@ -1,0 +1,145 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  landscape]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Lab 4: Zoning Compliance Analysis},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace} \usepackage{titling} \setlength{\droptitle}{-10ex} \pretitle{\begin{flushleft}\Large\bfseries} \posttitle{\par\end{flushleft}} \preauthor{\begin{flushleft}\Large} \postauthor{\end{flushleft}} \predate{\begin{flushleft}} \postdate{\end{flushleft}} \usepackage{boldline}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Lab 4: Zoning Compliance Analysis}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\vspace{-2.2cm}
+\raggedright
+
+Jennah Gosciak \newline February 21st, 2022 \newline
+
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+Table 1. Zoning Compliance Table for Brighton Beach
+\vspace*{-\baselineskip}
+
+\begin{tabular}[t]{V{4}>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{10em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}V{4}}
+\hlineB{4}
+\multicolumn{1}{V{4}c|}{\textbf{ }} & \multicolumn{1}{c|}{\textbf{Zoning Code}} & \multicolumn{2}{c|}{\textbf{C8-1}} & \multicolumn{2}{c|}{\textbf{R6}} & \multicolumn{2}{c|}{\textbf{R7-1}} \\
+\cline{2-2} \cline{3-4} \cline{5-6} \cline{7-8}
+\textbf{ } & \textbf{Category} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots}\\
+\hlineB{4}
+ & Commercial & 4 & 36.4\% & 158 & 9.4\% & 4 & 4.5\%\\
+\cline{2-8}
+ & Manufacturing & 5 & 45.5\% & 8 & 0.5\% & 0 & 0\%\\
+\cline{2-8}
+ & Other & 1 & 9.1\% & 36 & 2.1\% & 1 & 1.1\%\\
+\cline{2-8}
+\multirow{-4}{7em}{\raggedright\arraybackslash \textbf{Land Use}} & Residential & 1 & 9.1\% & 1,481 & 88\% & 84 & 94.4\%\\
+\cline{1-8}
+ & Unutilized & 7 & 63.6\% & 1,538 & 91.4\% & 32 & 36\%\\
+\cline{2-8}
+\multirow{-2}{7em}{\raggedright\arraybackslash \textbf{Utilization}} & Utilized & 4 & 36.4\% & 145 & 8.6\% & 57 & 64\%\\
+\cline{1-8}
+\textbf{\textbf{}} & \cellcolor[HTML]{B4C6E7}{\textbf{Grand Total}} & \cellcolor[HTML]{B4C6E7}{\textbf{11}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{1,686}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{93}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}}\\
+\hlineB{4}
+\end{tabular}
+
+\begin{tabular}[t]{V{4}>{\raggedright\arraybackslash}p{7em}|>{\raggedright\arraybackslash}p{10em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}|>{\raggedright\arraybackslash}p{5em}V{4}}
+\hlineB{4}
+\multicolumn{1}{V{4}c|}{\textbf{ }} & \multicolumn{1}{c|}{\textbf{Zoning Code}} & \multicolumn{2}{c|}{\textbf{PARK}} & \multicolumn{2}{c|}{\textbf{R3-1}} \\
+\cline{2-2} \cline{3-4} \cline{5-6}
+\textbf{ } & \textbf{Category} & \textbf{Count of Lots} & \textbf{Share of Lots} & \textbf{Count of Lots} & \textbf{Share of Lots}\\
+\hlineB{4}
+ & Commercial & 0 & 0\% & 0 & 0\%\\
+\cline{2-6}
+ & Manufacturing & 0 & 0\% & 0 & 0\%\\
+\cline{2-6}
+ & Other & 2 & 100\% & 0 & 0\%\\
+\cline{2-6}
+\multirow{-4}{7em}{\raggedright\arraybackslash \textbf{Land Use}} & Residential & 0 & 0\% & 54 & 100\%\\
+\cline{1-6}
+ & Unutilized & 0 & 0\% & 22 & 40.7\%\\
+\cline{2-6}
+\multirow{-2}{7em}{\raggedright\arraybackslash \textbf{Utilization}} & Utilized & 2 & 100\% & 32 & 59.3\%\\
+\cline{1-6}
+\textbf{\textbf{}} & \cellcolor[HTML]{B4C6E7}{\textbf{Grand Total}} & \cellcolor[HTML]{B4C6E7}{\textbf{2}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}} & \cellcolor[HTML]{B4C6E7}{\textbf{54}} & \cellcolor[HTML]{B4C6E7}{\textbf{100.0\%}}\\
+\hlineB{4}
+\end{tabular}
+
+Data source: NYC Primary Land Use Tax Output (PLUTO) 21v3
+
+\end{document}
